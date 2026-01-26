@@ -36,7 +36,30 @@ async def get_request_contact_keyboard(state: FSMContext) -> InlineKeyboardMarku
 
 
 
-async def get_services_print_keyboard(state: FSMContext) -> InlineKeyboardMarkup:
+async def get_main_keyboard(state: FSMContext) -> ReplyKeyboardMarkup:
+    """Get main menu keyboard."""
+    data = await state.get_data()
+    lang = data.get("language", "ru")
+
+    services = get_translation(lang, "services")
+    add_service = get_translation(lang, "add_service")
+    change_lang = get_translation(lang, "change_lang")
+
+    return ReplyKeyboardMarkup(
+        keyboard=[
+            [
+                KeyboardButton(text=services),
+                KeyboardButton(text=add_service),
+            ],
+            [
+                KeyboardButton(text=change_lang)
+            ],
+        ],
+        resize_keyboard=True,
+    )
+
+
+async def get_services_print_keyboard(state: FSMContext) -> ReplyKeyboardMarkup:
     data = await state.get_data()
     lang = data.get("language", "ru")
 
@@ -45,11 +68,9 @@ async def get_services_print_keyboard(state: FSMContext) -> InlineKeyboardMarkup
             [
                 KeyboardButton(
                     text=f"{get_translation(lang, 'print_results')}",
-                    request_contact=True,
                 ),
                 KeyboardButton(
                     text=f"{get_translation(lang, 'come_back')}",
-                    request_contact=True,
                 )
             ]
         ],
